@@ -9,23 +9,20 @@ program timeloop
   implicit none
   !
   real*8            :: reeltime,time_per_slice,periodTime
-  integer           :: ninLoop,fileNum,i,j,jj,total_loop_steps,downAndBack,straightSeries
+  integer           :: ninLoop,fileNum,i,j,jj,total_loop_steps,downAndBack,straightSeries,startingFileNum
   character*120     :: filename
   !
-  downAndBack = 0
-  straightSeries =1
-  fileNum = 1
-  reeltime = 0 
-  ninloop = 18 !19
-  periodTime = 1.8 !1/3.2
+  downAndBack = 0                             ! based on how files are organized
+  straightSeries =1                           ! based on how files are organized
+  startingFileNum = 0
+  fileNum = startingFileNum                   ! starting file index, probably 0 or 1.
+  reeltime = 0.0                              ! time should probably always start at 0.
+  ninloop = 59                                ! total number of files in the loop
+  periodTime = 1.8                            ! time for one cycle of the loop.
   time_per_slice = periodTime/(ninloop)
-  total_loop_steps = 10000
-  !filename = "circle_",ninloop,"_step_loop.dat"
-  filename = "circle_step_loop.dat"
+  total_loop_steps = 1000
+  filename = "heart2d_step_loop.dat"
   open(656,file=filename)
-  write(*,*) "JCH says let there be file num 1-20 and"
-  write(*,*) "JCH says let there be time step 1-infy."
-  !direction = 1
   !this is the setup for down and back, where the set goes down and then back.
   if (downAndBack.eq.1) then
      do i = 1, total_loop_steps
@@ -60,15 +57,14 @@ program timeloop
      !if only in a straight series, just down
      do i = 1, total_loop_steps
         do j = 1, ninloop
-           write(656,'(i2.2,E15.5)') fileNum,reeltime
+           write(656,'(i4.4,E15.5)') fileNum,reeltime
            reeltime = reeltime + time_per_slice
            fileNum = 1 + fileNum
            if (fileNum.gt.ninloop) then
-              fileNum = 1
+              fileNum = startingFileNum
            endif
         enddo
      enddo
   endif
   close(656)
-  !end subroutine timeloop
 end program timeloop
